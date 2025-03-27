@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.noteapp.R
 import com.noteapp.databinding.FragmentLoginBinding
 import com.noteapp.presentation.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment() {
@@ -27,5 +30,17 @@ class LoginFragment : BaseFragment() {
 
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
+        binding.btnGoogleSignIn.setOnClickListener {
+            viewModel.loginWithGoogle(requireContext())
+        }
+    }
+
+    override fun setupViewModelObserver() {
+        super.setupViewModelObserver()
+        lifecycleScope.launch {
+            viewModel.success.collect{
+                findNavController().navigate(LoginFragmentDirections.toHomeFragment())
+            }
+        }
     }
 }

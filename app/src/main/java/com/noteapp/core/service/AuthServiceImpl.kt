@@ -60,6 +60,7 @@ class AuthServiceImpl(
             val result = credentialManager.getCredential(context,req)
             Log.d("debugging", result.credential.data.toString())
             result.credential.data.getString("com.google.android.libraries.identity.googleid.BUNDLE_KEY_ID_TOKEN")
+
         }catch (e:Exception){
             Log.e("authService","Error fetching credential", e)
             null

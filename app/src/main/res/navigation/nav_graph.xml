@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
 
+
+    <action android:id="@+id/toLoginFragment"
+        app:popUpTo="@id/homeFragment"
+        app:popUpToInclusive="true"
+        app:destination="@+id/loginFragment"/>
+
+    <action android:id="@+id/toHomeFragment"
+        app:popUpTo="@id/loginFragment"
+        app:popUpToInclusive="true"
+        app:destination="@+id/homeFragment"/>
+
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.noteapp.presentation.ui.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.noteapp.presentation.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
 </navigation>
