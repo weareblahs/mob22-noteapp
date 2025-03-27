@@ -9,8 +9,9 @@ import androidx.fragment.app.viewModels
 import com.noteapp.R
 import com.noteapp.databinding.FragmentDetailBinding
 import com.noteapp.presentation.ui.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class DetailFragment : BaseFragment() {
     override val viewModel: DetailViewModel by viewModels()
     private lateinit var binding: FragmentDetailBinding
