@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import com.noteapp.R
 import com.noteapp.databinding.FragmentLoginBinding
 import com.noteapp.presentation.ui.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : BaseFragment() {
     private lateinit var binding: FragmentLoginBinding
     override val viewModel: LoginViewModel by viewModels()

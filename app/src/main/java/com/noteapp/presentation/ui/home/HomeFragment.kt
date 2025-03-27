@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import com.noteapp.R
 import com.noteapp.databinding.FragmentHomeBinding
 import com.noteapp.presentation.ui.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : BaseFragment() {
     override val viewModel: HomeViewModel by viewModels()
     private lateinit var binding: FragmentHomeBinding
