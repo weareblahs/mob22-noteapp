@@ -76,12 +76,12 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
     implementation("com.github.bumptech.glide:glide:4.16.0")
 //hilt2 = java dependency injector (during build)
-    implementation("com.google.dagger:hilt-android:2.52")
-    kapt("com.google.dagger:hilt-android-compiler:2.52")
+    implementation("com.google.dagger:hilt-android:2.55")
+    kapt("com.google.dagger:hilt-android-compiler:2.55")
 }
 kapt {
     correctErrorTypes = true
