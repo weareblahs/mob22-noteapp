@@ -1,4 +1,7 @@
 package com.noteapp.presentation.ui.detail
 
-class DetailViewModel {
+import com.noteapp.presentation.ui.base.BaseViewModel
+import javax.inject.Inject
+
+class DetailViewModel @Inject constructor() : BaseViewModel() {
 }
