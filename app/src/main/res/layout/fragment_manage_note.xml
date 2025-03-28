@@ -26,8 +26,8 @@
             android:textAlignment="center"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:text="@string/manage_task_placeholder"
-            android:id="@+id/manageTaskTopText"
+            android:text="@string/manage_note_placeholder"
+            android:id="@+id/manageNoteTopText"
             android:layout_weight="1"/>
     </LinearLayout>
     <LinearLayout
@@ -39,12 +39,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="2sp"
-            android:text="@string/task_title"/>
+            android:text="@string/note_title"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_bg"
-            android:hint="@string/task_title"
+            android:hint="@string/note_title"
+            android:id="@+id/etNoteTitle"
             android:padding="12sp"/>
     </LinearLayout>
 
@@ -57,12 +58,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingVertical="2sp"
-            android:text="@string/task_description"/>
+            android:text="@string/note_description"/>
         <EditText
+            android:id="@+id/etNoteDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_bg"
-            android:hint="@string/task_description"
+            android:hint="@string/note_description"
             android:lines="5"
             android:gravity="start"
             android:padding="12sp"/>
@@ -114,10 +116,10 @@
 
     </LinearLayout>
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/submitTaskText"
+        android:id="@+id/btnSubmitNote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/submit_task_placeholder"
+        android:text="@string/submit_note_placeholder"
         app:iconGravity="textStart"
         android:textAllCaps="false"
         android:paddingTop="12dp"

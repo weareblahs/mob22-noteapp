@@ -12,7 +12,7 @@ class EditFragment: BaseManageNoteFragment() {
 
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
-        binding.manageTaskTopText.text = getString(R.string.edit_task)
-        binding.submitTaskText.text = getString(R.string.edit)
+        binding.manageNoteTopText.text = getString(R.string.edit_note)
+        binding.btnSubmitNote.text = getString(R.string.edit)
     }
 }
