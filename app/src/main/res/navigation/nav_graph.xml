@@ -26,5 +26,33 @@
         android:id="@+id/homeFragment"
         android:name="com.noteapp.presentation.ui.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_addFragment"
+            app:destination="@id/addFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.noteapp.presentation.ui.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail">
+<!--        argType is set to string due to firebase IDs     -->
+        <argument android:name="id" app:nullable="false" app:argType="string"/>
+        <action
+            android:id="@+id/action_detailFragment_to_editFragment"
+            app:destination="@id/editFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addFragment"
+        android:name="com.noteapp.presentation.ui.manage.add.AddFragment"
+        android:label="AddFragment" />
+    <fragment
+        android:id="@+id/editFragment"
+        android:name="com.noteapp.presentation.ui.manage.edit.EditFragment"
+        android:label="EditFragment">
+        <argument android:name="id" app:nullable="false" app:argType="string"/>
+    </fragment>
 </navigation>

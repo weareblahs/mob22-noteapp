@@ -44,7 +44,8 @@ class HomeFragment : BaseFragment() {
         }
 
         binding.btnAddNote.setOnClickListener {
-            viewModel.addDummyNote()
+            val dir = HomeFragmentDirections.actionHomeFragmentToAddFragment()
+            findNavController().navigate(dir)
         }
     }
 

@@ -8,4 +8,12 @@
     <string name="note_title_placeholder_text">Note title</string>
     <string name="no_notes_description">Tap the \"Add\" icon below to add your first note.</string>
     <string name="no_notes">No notes</string>
+    <string name="task_title">Task title</string>
+    <string name="task_description">Task description</string>
+    <string name="submit_task_placeholder">Submit task</string>
+    <string name="manage_task_placeholder">Manage task</string>
+    <string name="edit">Edit</string>
+    <string name="edit_task">Edit task</string>
+    <string name="add_task">Add task</string>
+    <string name="add">Add</string>
 </resources>

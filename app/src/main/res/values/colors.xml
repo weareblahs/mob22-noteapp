@@ -32,4 +32,10 @@
 
     <!-- Edit text background color (light mode) -->
     <color name="editTextBackground">#FFFFFFFF</color>
+
+    <!-- Colors needed for task background colors -->
+    <color name="red">#DA0C00</color>
+    <color name="purple">#673AB7</color>
+    <color name="yellow">#FFC107</color>
+    <color name="cyan">#00BCD4</color>
 </resources>
