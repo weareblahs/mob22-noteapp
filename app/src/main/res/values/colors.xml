@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#0050FF00</color>
+    <color name="green">#AA11E000</color>
     <color name="gray">#2B2B2B00</color>
     <color name="primary">#4285F4</color>
     <color name="primary_variant">#3367D6</color>
@@ -14,8 +14,7 @@
     <color name="secondary_light">#81C784</color>
 
     <!-- Background and Surface Colors -->
-    <color name="background_light">#F5F5F5</color>
-    <color name="background_dark">#FFFFFF</color>
+    <color name="background">#F5F5F5</color>
     <color name="surface">#FFFFFF</color>
 
     <!-- Text Colors -->
@@ -26,4 +25,11 @@
     <!-- Error and Alert Colors -->
     <color name="error">#D32F2F</color>
     <color name="warning">#FBC02D</color>
+
+    <!-- Top app bar background colors -->
+    <color name="tab_bg_light">#FFFFFF</color>
+    <color name="tab_bg_dark">#2B2B2B</color>
+
+    <!-- Edit text background color (light mode) -->
+    <color name="editTextBackground">#FFFFFFFF</color>
 </resources>

@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        FirebaseAuth.getInstance().signOut()
+//        FirebaseAuth.getInstance().signOut()
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
