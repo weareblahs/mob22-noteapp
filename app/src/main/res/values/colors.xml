@@ -26,6 +26,4 @@
     <!-- Error and Alert Colors -->
     <color name="error">#D32F2F</color>
     <color name="warning">#FBC02D</color>
-
-
 </resources>
