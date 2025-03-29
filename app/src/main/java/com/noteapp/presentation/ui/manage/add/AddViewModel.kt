@@ -19,7 +19,8 @@ class AddViewModel @Inject constructor(private val repo: NotesRepo): BaseManageN
     override fun submitNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
-                repo.addNote(note)
+//                blank checks for note title
+                if(note.title.isEmpty()) throw Exception("Note title must not be empty") else repo.addNote(note)
                 _finish.emit(Unit)
             }
         }

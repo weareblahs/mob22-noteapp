@@ -3,6 +3,7 @@ package com.noteapp.presentation.ui.manage.edit
 import android.text.Editable
 import android.util.Log
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 class EditFragment: BaseManageNoteFragment() {
     override val viewModel: EditViewModel by viewModels()
     private val args: EditFragmentArgs by navArgs()
-    var color = ""
+
 
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
@@ -35,21 +36,21 @@ class EditFragment: BaseManageNoteFragment() {
             )
         }
 
-        //            color bindings
+//            color bindings
         binding.colorBox1.setOnClickListener {
-            color = "#088A1F"
+            changeColor("#088A1F")
         }
         binding.colorBox2.setOnClickListener {
-            color = "#00BCD4"
+            changeColor("#00BCD4")
         }
         binding.colorBox3.setOnClickListener {
-            color = "#DA0C00"
+            changeColor("#DA0C00")
         }
         binding.colorBox4.setOnClickListener {
-            color = "#673AB7"
+            changeColor("#673AB7")
         }
         binding.colorBox5.setOnClickListener {
-            color = "#FFC107"
+            changeColor("#FFC107")
         }
     }
 
@@ -60,7 +61,7 @@ class EditFragment: BaseManageNoteFragment() {
 //                when firestore gets the note, the following will update the note title and the note description
                 binding.etNoteTitle.text = Editable.Factory.getInstance().newEditable(viewModel.existingNote.value.title)
                 binding.etNoteDesc.text = Editable.Factory.getInstance().newEditable(viewModel.existingNote.value.desc)
-                color = viewModel.existingNote.value.color
+                changeColor(viewModel.existingNote.value.color)
             }
         }
     }
