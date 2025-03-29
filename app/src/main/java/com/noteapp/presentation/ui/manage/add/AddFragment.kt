@@ -11,7 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddFragment: BaseManageNoteFragment() {
     override val viewModel: AddViewModel by viewModels()
-    var color = "#FFFFFF"
+    var color = ""
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
         binding.manageNoteTopText.text = getString(R.string.add_note)
@@ -25,6 +25,24 @@ class AddFragment: BaseManageNoteFragment() {
                 )
             )
         }
+
+//            color bindings
+        binding.colorBox1.setOnClickListener {
+            color = "#088A1F"
+        }
+        binding.colorBox2.setOnClickListener {
+            color = "#00BCD4"
+        }
+        binding.colorBox3.setOnClickListener {
+            color = "#DA0C00"
+        }
+        binding.colorBox4.setOnClickListener {
+            color = "#673AB7"
+        }
+        binding.colorBox5.setOnClickListener {
+            color = "#FFC107"
+        }
+
 //        NOTE ABOUT COLORS
 //        binding.colorBox1 = green (#088A1F)
 //        binding.colorBox2 = cyan (#00BCD4)
