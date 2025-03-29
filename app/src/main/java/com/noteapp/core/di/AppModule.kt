@@ -19,6 +19,7 @@ class AppModule {
         return NotesRepoImpl(authService = authService)
     }
 
+
     @Provides
     @Singleton
     fun provideAuthService(): AuthService {
