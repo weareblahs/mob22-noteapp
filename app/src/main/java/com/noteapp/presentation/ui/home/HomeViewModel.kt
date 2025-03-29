@@ -21,7 +21,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val authService: AuthService, val repo: NotesRepo) : BaseViewModel() {
+class HomeViewModel @Inject constructor(
+    private val authService: AuthService,
+    val repo: NotesRepo
+) : BaseViewModel() {
     val notes = MutableStateFlow<List<Note>>(emptyList())
     val _empty = MutableStateFlow<Boolean>(true)
     val empty = _empty
