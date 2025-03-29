@@ -8,7 +8,11 @@ import com.noteapp.data.model.Note
 import com.noteapp.databinding.ItemNoteBinding
 import androidx.core.graphics.toColorInt
 
-class NoteAdapter(private var notes: List<Note>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NoteAdapter(
+    private var notes: List<Note>
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var listener: Listener? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemNoteBinding.inflate(inflater, parent, false)
@@ -25,6 +29,11 @@ class NoteAdapter(private var notes: List<Note>): RecyclerView.Adapter<RecyclerV
             binding.title.text = note.title // assigns note title
             binding.desc.text = note.desc // assigns note description
 //            TODO: view single note on tap, which can be done with a listener
+            binding.cvNote.setOnClickListener { listener?.onItemClick(note) }
+            binding.cvNote.setOnLongClickListener {
+                listener?.onItemLongClick(note)
+                true // Return true to indicate that the event was handled
+            }
         }
     }
 
@@ -37,6 +46,11 @@ class NoteAdapter(private var notes: List<Note>): RecyclerView.Adapter<RecyclerV
     fun setNotes(newNotes: List<Note>) {
         notes = newNotes
         notifyDataSetChanged()
+    }
+
+    interface Listener{
+        fun onItemClick(note: Note)
+        fun onItemLongClick(note: Note)
     }
 
 }
