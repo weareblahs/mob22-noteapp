@@ -17,6 +17,7 @@ class EditFragment: BaseManageNoteFragment() {
     override val viewModel: EditViewModel by viewModels()
     private val args: EditFragmentArgs by navArgs()
     var color = ""
+
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
         val noteId = args.id
@@ -32,6 +33,23 @@ class EditFragment: BaseManageNoteFragment() {
                     color = color
                 )
             )
+        }
+
+        //            color bindings
+        binding.colorBox1.setOnClickListener {
+            color = "#088A1F"
+        }
+        binding.colorBox2.setOnClickListener {
+            color = "#00BCD4"
+        }
+        binding.colorBox3.setOnClickListener {
+            color = "#DA0C00"
+        }
+        binding.colorBox4.setOnClickListener {
+            color = "#673AB7"
+        }
+        binding.colorBox5.setOnClickListener {
+            color = "#FFC107"
         }
     }
 
