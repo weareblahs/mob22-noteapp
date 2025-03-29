@@ -11,6 +11,7 @@ import com.noteapp.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.noteapp.core.utils.DialogUtils
 import com.noteapp.data.model.Note
 import com.noteapp.data.repo.NotesRepoImpl
 import kotlinx.coroutines.Dispatchers
@@ -63,25 +64,51 @@ class HomeViewModel @Inject constructor(
     }
 
     fun logOut(context: Context) {
-//        pops out an alert dialog after tapping on the "log out" button
-        val alertDialog = AlertDialog.Builder(context)
-        alertDialog.apply {
-            //setIcon(R.drawable.ic_hello)
-            setTitle("Log out")
-            setMessage("Are you sure you want to log out from this app?")
-            setPositiveButton("Back") { dialog, id ->
-                dialog.dismiss()
+////        pops out an alert dialog after tapping on the "log out" button
+//        val alertDialog = AlertDialog.Builder(context)
+//        alertDialog.apply {
+//            //setIcon(R.drawable.ic_hello)
+//            setTitle("Log out")
+//            setMessage("Are you sure you want to log out from this app?")
+//            setPositiveButton("Back") { dialog, id ->
+//                dialog.dismiss()
+//            }
+//            setNegativeButton("Log out") { dialog, dismiss ->
+////                authService.logout() // logs out from auth service BUT does not go back. will have a implementation in the future
+//                viewModelScope.launch {
+//                    errorHandler {
+//                        authService.logout()
+//                    }
+//                    _success.emit(Unit)
+//                }
+//            }
+//        }.create().show()
+        DialogUtils.showConfirmationDialog(
+            context = context,
+            title = "Log out",
+            message = "Are you sure you want to log out?",
+            positiveText = "Log out",
+            negativeText = "Back"
+        ) {
+            viewModelScope.launch {
+                authService.logout()
+                _success.emit(Unit)
             }
-            setNegativeButton("Log out") { dialog, dismiss ->
-//                authService.logout() // logs out from auth service BUT does not go back. will have a implementation in the future
-                viewModelScope.launch {
-                    errorHandler {
-                        authService.logout()
-                    }
-                    _success.emit(Unit)
-                }
+        }
+    }
+
+    fun deleteNote(context: Context,note: Note){
+        DialogUtils.showConfirmationDialog(
+            context = context,
+            title = "Delete Note",
+            message = "Are you sure you want to delete this note?",
+            positiveText = "Delete",
+            negativeText = "Cancel"
+        ) {
+            viewModelScope.launch {
+                repo.deleteNote(note)
             }
-        }.create().show()
+        }
     }
 
 
