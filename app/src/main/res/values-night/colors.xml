@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Edit text background color (light mode) -->
+    <color name="editTextBackground">#2E2E2EFF</color>
+
+    <!-- Background and Surface Colors -->
+    <color name="background">#141414</color>
+    <color name="surface">#FFFFFF</color>
+
+    <!-- Text Colors -->
+    <color name="primary_text">#CACACA</color>
+    <color name="secondary_text">#A6A6A6</color>
+    <color name="text_on_primary">#000000</color>
+</resources>

@@ -6,4 +6,14 @@ data class Note(
     val desc: String = "",
     val color: String = "#FFFFFF",
     val lastUpdated: Long? = System.currentTimeMillis()
-)
+) {
+    fun toHashMap(): Map<String,Any?> {
+        return mapOf(
+            "id" to id,
+            "title" to title,
+            "desc" to desc,
+            "color" to color,
+            "lastUpdated" to lastUpdated
+        )
+    }
+}
