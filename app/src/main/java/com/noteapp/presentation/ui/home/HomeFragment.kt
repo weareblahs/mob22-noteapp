@@ -17,6 +17,7 @@ import com.noteapp.data.model.Note
 import com.noteapp.databinding.FragmentHomeBinding
 import com.noteapp.presentation.ui.adapter.NoteAdapter
 import com.noteapp.presentation.ui.base.BaseFragment
+import com.noteapp.presentation.ui.login.LoginFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -41,6 +42,15 @@ class HomeFragment : BaseFragment() {
             .into(binding.profilePicture) // loads google profile photo into top-left of app
         binding.profilePicture.setOnClickListener {
             viewModel.logOut(requireContext()) // not implemented: popbackstack when logout. check homeviewmodel
+            lifecycleScope.launch {
+                viewModel.success.collect{
+                    findNavController().navigate(HomeFragmentDirections.toLoginFragment())
+                }
+            }
+        }
+
+        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            binding.tvMyNotes.isVisible = !hasFocus
         }
 
         binding.btnAddNote.setOnClickListener {

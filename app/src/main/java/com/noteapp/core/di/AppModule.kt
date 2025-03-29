@@ -13,15 +13,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
-//    @Provides
-//    @Singleton
-//    fun provideTasksRepo(
-//        authService: AuthService
-//    ): NotesRepo{
-//        return NotesRepoImpl(
-//            authService = authService
-//        )
-//    }
+    @Provides
+    @Singleton
+    fun provideNoteRepo(authService: AuthService): NotesRepo {
+        return NotesRepoImpl(authService = authService)
+    }
 
     @Provides
     @Singleton
