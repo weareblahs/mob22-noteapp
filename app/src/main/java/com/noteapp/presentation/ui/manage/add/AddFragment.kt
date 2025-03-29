@@ -42,21 +42,6 @@ class AddFragment: BaseManageNoteFragment() {
 
 //        note that home fragment has the code to handle conversion to integer
 
-        binding.colorBox1.setOnClickListener {
-            color = "#088A1F"
-        }
-        binding.colorBox2.setOnClickListener {
-            color = "#00BCD4"
-        }
-        binding.colorBox3.setOnClickListener {
-            color = "#DA0C00"
-        }
-        binding.colorBox4.setOnClickListener {
-            color = "#673AB7"
-        }
-        binding.colorBox5.setOnClickListener {
-            color = "#FFC107"
-        }
 
 //        when submit, the color is brought along with the title and description, so ensure
 //        that the Note model looks like this when submitting from this class:
