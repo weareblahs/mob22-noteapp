@@ -14,17 +14,24 @@ import androidx.lifecycle.viewModelScope
 import com.noteapp.data.model.Note
 import com.noteapp.data.repo.NotesRepoImpl
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val authService: AuthService, val repo: NotesRepo) : BaseViewModel() {
+class HomeViewModel @Inject constructor(
+    private val authService: AuthService,
+    val repo: NotesRepo
+) : BaseViewModel() {
     val notes = MutableStateFlow<List<Note>>(emptyList())
     val _empty = MutableStateFlow<Boolean>(true)
-    val empty = _empty
+    val empty = _empty.asStateFlow()
+    private val _success = MutableSharedFlow<Unit>()
+    val success = _success.asSharedFlow()
     init {
         getNotes()
         Log.d("debugging", empty.toString())
@@ -66,7 +73,13 @@ class HomeViewModel @Inject constructor(private val authService: AuthService, va
                 dialog.dismiss()
             }
             setNegativeButton("Log out") { dialog, dismiss ->
-                authService.logout() // logs out from auth service BUT does not go back. will have a implementation in the future
+//                authService.logout() // logs out from auth service BUT does not go back. will have a implementation in the future
+                viewModelScope.launch {
+                    errorHandler {
+                        authService.logout()
+                    }
+                    _success.emit(Unit)
+                }
             }
         }.create().show()
     }
