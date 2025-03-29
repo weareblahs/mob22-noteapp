@@ -10,9 +10,4 @@ import dagger.hilt.android.AndroidEntryPoint
 class EditFragment: BaseManageNoteFragment() {
     override val viewModel: EditViewModel by viewModels()
 
-    override fun setupUiComponents(view: View) {
-        super.setupUiComponents(view)
-        binding.manageNoteTopText.text = getString(R.string.edit_note)
-        binding.btnSubmitNote.text = getString(R.string.edit)
-    }
 }
