@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.noteapp.R
 import com.noteapp.data.model.Note
 import com.noteapp.databinding.FragmentHomeBinding
@@ -61,7 +62,17 @@ class HomeFragment : BaseFragment() {
 
     private fun setupAdapter() {
         adapter = NoteAdapter(emptyList())
-//        TODO: listener code
+        adapter.listener = object: NoteAdapter.Listener{
+            override fun onItemClick(note: Note) {
+                val action = HomeFragmentDirections.actionHomeFragmentToDetailFragment(note.id!!)
+                findNavController().navigate(action)
+            }
+
+            override fun onItemLongClick(note: Note) {
+                showNoteOptionsBottomSheet(note)
+            }
+
+        }
         binding.rvNote.adapter = adapter
         binding.rvNote.layoutManager = GridLayoutManager(requireContext(), 2)
     }
@@ -76,8 +87,26 @@ class HomeFragment : BaseFragment() {
             }
         }
 
-
-
         Log.d("debugging", viewModel.notes.value.isEmpty().toString())
+    }
+
+    // Displays a bottom sheet with options for the selected note
+    private fun showNoteOptionsBottomSheet(note: Note) {
+        BottomSheetDialog(requireContext()).apply {
+            setContentView(layoutInflater.inflate(R.layout.bottom_sheet_note_options, null))
+            findViewById<View>(R.id.btn_edit)?.setOnClickListener {
+                // Navigate to ManageNoteFragment for editing the note
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeFragmentToEditFragment(note.id!!)
+                )
+                dismiss()
+            }
+            findViewById<View>(R.id.btn_delete)?.setOnClickListener {
+                dismiss()
+                // Show confirmation dialog to delete note
+                viewModel.deleteNote(requireContext(),note)
+            }
+            show() // Display the bottom sheet
+        }
     }
 }
