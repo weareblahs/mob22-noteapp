@@ -39,10 +39,14 @@ class DetailFragment : BaseFragment() {
         super.setupUiComponents(view)
         viewModel.getNote(args.NoteId)
 
-
         binding.btnDeleteNote.setOnClickListener {
             // Show confirmation dialog to delete note
             viewModel.deleteNote(requireContext(), viewModel.note.value)
+        }
+
+        binding.btnEditNote.setOnClickListener {
+            val dir = DetailFragmentDirections.actionDetailFragmentToEditFragment(viewModel.note.value.id!!)
+            findNavController().navigate(dir)
         }
     }
 
@@ -70,7 +74,11 @@ class DetailFragment : BaseFragment() {
         lifecycleScope.launch {
             viewModel.noteDeleted.collect {
                 if(viewModel.noteDeleted.value) {
-                    findNavController().popBackStack()
+//                    BUG FIX: after note is edited, if a user wants to delete this note, popBackStack() will be
+//                             going back to the login layout instead of the home layout as expected. this is a
+//                             hardcoded way to do this
+                    val dir = DetailFragmentDirections.actionDetailFragmentToHomeFragment()
+                    findNavController().navigate(dir)
                     Snackbar.make(requireView(), "Note deleted", Snackbar.LENGTH_LONG).show()
                 }
             }
