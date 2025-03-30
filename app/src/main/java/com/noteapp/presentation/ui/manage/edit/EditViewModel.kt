@@ -19,6 +19,8 @@ import javax.inject.Inject
 class EditViewModel @Inject constructor(private val repo: NotesRepo) : BaseManageNoteViewModel() {
     val _existingNote = MutableStateFlow<Note>(Note())
     val existingNote = _existingNote.asStateFlow()
+    val _dataPending = MutableStateFlow<Boolean>(true)
+    val dataPending = _dataPending.asStateFlow()
 
     val _isUpdated = MutableSharedFlow<Unit>()
     val isUpdated = _isUpdated.asSharedFlow()
@@ -28,6 +30,7 @@ class EditViewModel @Inject constructor(private val repo: NotesRepo) : BaseManag
                 val note = repo.getSingleNote(id)
                 _existingNote.update { note!! }
                 _isUpdated.emit(Unit)
+                _dataPending.update { false }
             }
         }
     }

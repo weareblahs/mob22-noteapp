@@ -64,6 +64,12 @@ class EditFragment: BaseManageNoteFragment() {
                 changeColor(viewModel.existingNote.value.color)
             }
         }
+
+        lifecycleScope.launch {
+            viewModel.dataPending.collect{
+                binding.loading.isVisible = viewModel.dataPending.value // handles loading state
+            }
+        }
     }
 
 

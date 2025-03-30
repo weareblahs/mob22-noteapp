@@ -15,6 +15,7 @@ class AddFragment: BaseManageNoteFragment() {
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
 //      as this is the fragment for add, it hides the "loading" spinner by default
+        binding.loading.isVisible = false
         binding.manageNoteTopText.text = getString(R.string.add_note)
         binding.btnSubmitNote.text = getString(R.string.add)
         binding.btnSubmitNote.setOnClickListener {
