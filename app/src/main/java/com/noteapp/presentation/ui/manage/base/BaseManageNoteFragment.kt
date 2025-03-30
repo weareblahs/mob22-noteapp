@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.noteapp.databinding.FragmentManageNoteBinding
 import com.noteapp.presentation.ui.base.BaseFragment
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ abstract class BaseManageNoteFragment: BaseFragment() {
         lifecycleScope.launch  {
             viewModel.finish.collect{
                 findNavController().popBackStack()
+                Snackbar.make(requireView(), "Note modified", Snackbar.LENGTH_LONG).show()
             }
         }
     }
