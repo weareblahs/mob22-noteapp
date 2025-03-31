@@ -38,6 +38,7 @@ class EditViewModel @Inject constructor(private val repo: NotesRepo) : BaseManag
     override fun submitNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
+                _dataPending.update { true } // loading view is implemented in this case so that when changing data in Firestore, no last minute edits are allowed
                 repo.editNote(note)
                 _finish.emit(Unit)
             }

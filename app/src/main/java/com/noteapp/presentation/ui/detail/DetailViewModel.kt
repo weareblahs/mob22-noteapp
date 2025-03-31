@@ -42,6 +42,7 @@ class DetailViewModel @Inject constructor(private val repo: NotesRepo) : BaseVie
         ) {
             viewModelScope.launch {
                 repo.deleteNote(note)
+                _dataPending.update { true }
                 _noteDeleted.update { true }
             }
         }
