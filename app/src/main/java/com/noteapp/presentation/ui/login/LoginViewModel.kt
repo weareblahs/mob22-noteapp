@@ -16,8 +16,6 @@ class LoginViewModel @Inject constructor(
 ): BaseViewModel() {
     private val _success = MutableSharedFlow<Unit>()
     val success = _success.asSharedFlow()
-
-
     fun loginWithGoogle(context: Context){
         viewModelScope.launch {
             errorHandler {
