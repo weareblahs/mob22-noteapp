@@ -50,7 +50,7 @@ class DetailViewModel @Inject constructor(private val repo: NotesRepo) : BaseVie
                 }
                 repo.deleteNote(note)
                 _singleNote.update {
-                    it.copy(noteDeleted = true, dataPending = false)
+                    it.copy(noteDeleted = true)
                 }
 
             }
@@ -63,7 +63,7 @@ sealed class NotesIntent {
 }
 
 data class SingleNote (
-    val dataPending: Boolean = true,
-    val note: Note = Note(),
-    val noteDeleted: Boolean = false
+    val dataPending: Boolean = true, // "loading" view indicator
+    val note: Note = Note(), // if firestore successfully gets note, store note here
+    val noteDeleted: Boolean = false // if note is deleted, this will be set to "true" so that it will go back to home layout
 )

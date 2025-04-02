@@ -79,8 +79,7 @@
                         android:layout_height="wrap_content"
                         android:textSize="25sp"
                         android:id="@+id/noteDescription"
-                        android:textColor="@color/black"
-                        android:hint="@string/note_description_placeholder_ref"/>
+                        android:textColor="@color/black"/>
                 </LinearLayout>
                 <Space
                     android:layout_width="match_parent"
