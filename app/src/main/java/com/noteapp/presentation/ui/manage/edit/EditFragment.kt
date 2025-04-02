@@ -3,6 +3,7 @@ package com.noteapp.presentation.ui.manage.edit
 import android.text.Editable
 import android.util.Log
 import android.view.View
+import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -34,23 +35,6 @@ class EditFragment: BaseManageNoteFragment() {
                     color = color
                 )
             )
-        }
-
-//            color bindings
-        binding.colorBox1.setOnClickListener {
-            changeColor("#088A1F")
-        }
-        binding.colorBox2.setOnClickListener {
-            changeColor("#00BCD4")
-        }
-        binding.colorBox3.setOnClickListener {
-            changeColor("#DA0C00")
-        }
-        binding.colorBox4.setOnClickListener {
-            changeColor("#673AB7")
-        }
-        binding.colorBox5.setOnClickListener {
-            changeColor("#FFC107")
         }
     }
 

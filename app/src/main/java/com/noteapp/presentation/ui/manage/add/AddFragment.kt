@@ -27,22 +27,5 @@ class AddFragment: BaseManageNoteFragment() {
                 )
             )
         }
-
-//            color bindings
-        binding.colorBox1.setOnClickListener {
-            changeColor("#088A1F")
-        }
-        binding.colorBox2.setOnClickListener {
-            changeColor("#00BCD4")
-        }
-        binding.colorBox3.setOnClickListener {
-            changeColor("#DA0C00")
-        }
-        binding.colorBox4.setOnClickListener {
-            changeColor("#673AB7")
-        }
-        binding.colorBox5.setOnClickListener {
-            changeColor("#FFC107")
-        }
     }
 }

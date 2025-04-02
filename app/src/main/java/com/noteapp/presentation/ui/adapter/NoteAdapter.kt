@@ -26,11 +26,8 @@ class NoteAdapter(
 
     inner class NoteViewHolder(private val binding: ItemNoteBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
-            var color = "#FFFFFF"
-            if(note.color != "") {
-                color = note.color
-            }
-            binding.cvNote.setCardBackgroundColor(color.toColorInt()) // parses color to integer so it can set the background color of the card, which is set according to
+            var color = note.color
+            binding.cvNote.setCardBackgroundColor(color) // parses color to integer so it can set the background color of the card, which is set according to
             binding.title.text = note.title // assigns note title
             binding.desc.text = note.desc // assigns note description
             binding.desc.isVisible = (note.desc != "")

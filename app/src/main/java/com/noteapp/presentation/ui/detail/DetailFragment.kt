@@ -55,14 +55,11 @@ class DetailFragment : BaseFragment() {
         lifecycleScope.launch {
             viewModel.note.collect{
 //                when firestore gets the note, the following will update the note title and the note description
-                var color = "#FFFFFF"
-                if(viewModel.note.value.color != "") {
-                    color = viewModel.note.value.color
-                }
+                var color = viewModel.note.value.color
 
                 binding.noteTitle.text = viewModel.note.value.title
                 binding.noteDescription.text = viewModel.note.value.desc
-                binding.noteDisplay.setBackgroundColor(color.toColorInt())
+                binding.noteDisplay.setBackgroundColor(color)
 //                changeColor(viewModel.existingNote.value.color)
             }
         }
