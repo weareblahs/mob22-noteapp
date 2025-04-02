@@ -17,6 +17,7 @@ import com.noteapp.data.repo.NotesRepoImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,65 +29,83 @@ class HomeViewModel @Inject constructor(
     private val authService: AuthService,
     val repo: NotesRepo
 ) : BaseViewModel() {
-    val notes = MutableStateFlow<List<Note>>(emptyList())
+
+    private val allNotes = MutableStateFlow<List<Note>>(emptyList()) // Stores all notes
+    val notes = MutableStateFlow<List<Note>>(emptyList()) // Stores filtered notes
+
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
     val _empty = MutableStateFlow<Boolean>(true)
     val empty = _empty.asStateFlow()
+
     val _dataPending = MutableStateFlow<Boolean>(true)
     val dataPending = _dataPending.asStateFlow()
+
     private val _success = MutableSharedFlow<Unit>()
     val success = _success.asSharedFlow()
+
+    private val _isSearchActive = MutableStateFlow(false)
+    val isSearchActive = _isSearchActive.asStateFlow()
+
+
     init {
         getNotes()
-        Log.d("debugging", empty.toString())
+        observeSearchQuery()
     }
 
     fun getProfileUrl(): Uri? {
         return authService.getLoggedInUser()?.photoUrl
     }
 
-    fun getNotes() : Boolean {
+    fun getNotes() {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
-                repo.getNotes().collect {items ->
-                    notes.update {items}
-                    _empty.update {false}
-                    _dataPending.update {false} // handles loading state, which will control the "loading" view on the layout. the loading view only contains a spinner
+                repo.getNotes().collect { items ->
+                    allNotes.value = items  // Store all notes
+                    notes.value = items // Initially show all notes
+                    _empty.update { items.isEmpty() }
+                    _dataPending.update { false }
                 }
             }
         }
-        return true
     }
 
+    fun setSearchActive(active: Boolean) {
+        _isSearchActive.value = active
+    }
+
+    fun searchNotes(query: String) {
+        _searchQuery.value = query  // Update the search query
+    }
+
+    private fun observeSearchQuery() {
+        viewModelScope.launch {
+            _searchQuery.collect { query ->
+                notes.value = if (query.isEmpty()) {
+                    allNotes.value  // Show all notes when query is empty
+                } else {
+                    allNotes.value.filter {
+                        it.title.contains(query, ignoreCase = true) ||
+                                it.desc.contains(query, ignoreCase = true)
+                    }
+                }
+            }
+        }
+    }
 
     fun addDummyNote() {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.addNote(Note(
-                title = "Note title ${(1..1000).random()}",
-                desc = "Note description ${(1..1000).random()}"
-            ))
+            repo.addNote(
+                Note(
+                    title = "Note title ${(1..1000).random()}",
+                    desc = "Note description ${(1..1000).random()}"
+                )
+            )
         }
     }
 
     fun logOut(context: Context) {
-////        pops out an alert dialog after tapping on the "log out" button
-//        val alertDialog = AlertDialog.Builder(context)
-//        alertDialog.apply {
-//            //setIcon(R.drawable.ic_hello)
-//            setTitle("Log out")
-//            setMessage("Are you sure you want to log out from this app?")
-//            setPositiveButton("Back") { dialog, id ->
-//                dialog.dismiss()
-//            }
-//            setNegativeButton("Log out") { dialog, dismiss ->
-////                authService.logout() // logs out from auth service BUT does not go back. will have a implementation in the future
-//                viewModelScope.launch {
-//                    errorHandler {
-//                        authService.logout()
-//                    }
-//                    _success.emit(Unit)
-//                }
-//            }
-//        }.create().show()
         DialogUtils.showConfirmationDialog(
             context = context,
             title = "Log out",
@@ -101,7 +120,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deleteNote(context: Context,note: Note){
+    fun deleteNote(context: Context, note: Note) {
         DialogUtils.showConfirmationDialog(
             context = context,
             title = "Delete Note",
@@ -111,9 +130,8 @@ class HomeViewModel @Inject constructor(
         ) {
             viewModelScope.launch {
                 repo.deleteNote(note)
+                getNotes() // Refresh notes after deletion
             }
         }
     }
-
-
 }
