@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,7 @@ class HomeFragment : BaseFragment() {
     override val viewModel: HomeViewModel by viewModels()
     private lateinit var binding: FragmentHomeBinding
     private lateinit var adapter: NoteAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,9 +52,11 @@ class HomeFragment : BaseFragment() {
             }
         }
 
-        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            binding.tvMyNotes.isVisible = !hasFocus
-        }
+//        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+//            binding.tvMyNotes.isVisible = !hasFocus
+//        }
+
+        setupSearchView()
 
         binding.btnAddNote.setOnClickListener {
             val dir = HomeFragmentDirections.actionHomeFragmentToAddFragment()
@@ -95,7 +99,25 @@ class HomeFragment : BaseFragment() {
 
     }
 
-    // Displays a bottom sheet with options for the selected note
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(
+            object : android.widget.SearchView.OnQueryTextListener
+            {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    query?.let { viewModel.searchNotes(it) }
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    viewModel.searchNotes(newText.orEmpty())
+                    return true
+                }
+
+            }
+        )
+    }
+
+        // Displays a bottom sheet with options for the selected note
     private fun showNoteOptionsBottomSheet(note: Note) {
         BottomSheetDialog(requireContext()).apply {
             setContentView(layoutInflater.inflate(R.layout.bottom_sheet_note_options, null))

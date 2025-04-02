@@ -32,7 +32,7 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="My notes"
+                android:text=""
                 android:layout_weight="1"/>
             <SearchView
                 android:id="@+id/searchView"
