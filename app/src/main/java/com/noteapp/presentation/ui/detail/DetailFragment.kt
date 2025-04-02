@@ -74,7 +74,7 @@ class DetailFragment : BaseFragment() {
 //                    BUG FIX: after note is edited, if a user wants to delete this note, popBackStack() will be
 //                             going back to the login layout instead of the home layout as expected. this is a
 //                             hardcoded way to do this
-                    val dir = DetailFragmentDirections.actionDetailFragmentToHomeFragment2()
+                    val dir = DetailFragmentDirections.actionDetailFragmentToHomeFragment()
                     findNavController().navigate(dir)
                     Snackbar.make(requireView(), "Note deleted", Snackbar.LENGTH_LONG).show()
                 }
