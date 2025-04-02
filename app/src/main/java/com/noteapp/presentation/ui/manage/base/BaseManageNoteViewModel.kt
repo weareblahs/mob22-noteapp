@@ -15,10 +15,3 @@ import kotlinx.coroutines.launch
 abstract class BaseManageNoteViewModel: BaseViewModel() {
     abstract fun handleIntent(intent: NotesIntent)
 }
-
-
-data class EditNote(
-    val existingNote: Note = Note(),
-    val isPending: Boolean = true,
-    val isFinished: Boolean = false
-)
