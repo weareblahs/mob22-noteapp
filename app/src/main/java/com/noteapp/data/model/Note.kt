@@ -4,7 +4,7 @@ data class Note(
     val id: String? = null,
     val title: String = "",
     val desc: String = "",
-    val color: String = "#FFFFFF",
+    val color: Int = -1,
     val lastUpdated: Long? = System.currentTimeMillis()
 ) {
     fun toHashMap(): Map<String,Any?> {

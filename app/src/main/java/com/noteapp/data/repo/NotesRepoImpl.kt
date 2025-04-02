@@ -47,8 +47,9 @@ class NotesRepoImpl @Inject constructor (private val authService: AuthService): 
         TODO("Not yet implemented")
     }
 
-    override suspend fun getSingleNote(id: String): Flow<Note> {
-        TODO("Not yet implemented")
+    override suspend fun getSingleNote(id: String): Note? {
+        val snapshot = getCollectionRef().document(id).get().await()
+        return snapshot.toObject(Note::class.java)?.copy(id = snapshot.id)
     }
 
     override suspend fun addNote(note: Note) {

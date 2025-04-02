@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.noteapp.data.model.Note
 import com.noteapp.databinding.ItemNoteBinding
 import androidx.core.graphics.toColorInt
+import androidx.core.view.isVisible
 
 class NoteAdapter(
     private var notes: List<Note>
@@ -25,9 +26,11 @@ class NoteAdapter(
 
     inner class NoteViewHolder(private val binding: ItemNoteBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(note: Note) {
-            binding.cvNote.setCardBackgroundColor(note.color.toColorInt()) // parses color to integer so it can set the background color of the card, which is set according to
+            var color = note.color
+            binding.cvNote.setCardBackgroundColor(color) // parses color to integer so it can set the background color of the card, which is set according to
             binding.title.text = note.title // assigns note title
             binding.desc.text = note.desc // assigns note description
+            binding.desc.isVisible = (note.desc != "")
 //            TODO: view single note on tap, which can be done with a listener
             binding.cvNote.setOnClickListener { listener?.onItemClick(note) }
             binding.cvNote.setOnLongClickListener {

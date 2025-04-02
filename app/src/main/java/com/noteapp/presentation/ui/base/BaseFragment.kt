@@ -41,6 +41,10 @@ abstract class BaseFragment: Fragment() {
                     com.google.android.material.R.color.design_default_color_error
                 )
             )
+            setTextColor(ContextCompat.getColor(
+                requireContext(),
+                com.noteapp.R.color.white
+            ))
         }.show()
     }
 }

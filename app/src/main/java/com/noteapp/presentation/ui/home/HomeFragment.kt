@@ -87,7 +87,12 @@ class HomeFragment : BaseFragment() {
             }
         }
 
-        Log.d("debugging", viewModel.notes.value.isEmpty().toString())
+        lifecycleScope.launch {
+            viewModel.dataPending.collect {
+                binding.loading.isVisible = viewModel.dataPending.value // handles loading state
+            }
+        }
+
     }
 
     // Displays a bottom sheet with options for the selected note

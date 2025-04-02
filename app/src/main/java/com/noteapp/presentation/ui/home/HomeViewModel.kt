@@ -31,6 +31,8 @@ class HomeViewModel @Inject constructor(
     val notes = MutableStateFlow<List<Note>>(emptyList())
     val _empty = MutableStateFlow<Boolean>(true)
     val empty = _empty.asStateFlow()
+    val _dataPending = MutableStateFlow<Boolean>(true)
+    val dataPending = _dataPending.asStateFlow()
     private val _success = MutableSharedFlow<Unit>()
     val success = _success.asSharedFlow()
     init {
@@ -44,11 +46,13 @@ class HomeViewModel @Inject constructor(
 
     fun getNotes() : Boolean {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getNotes().collect {items ->
-                notes.update {items}
-                _empty.update {false}
+            errorHandler {
+                repo.getNotes().collect {items ->
+                    notes.update {items}
+                    _empty.update {false}
+                    _dataPending.update {false} // handles loading state, which will control the "loading" view on the layout. the loading view only contains a spinner
+                }
             }
-            Log.d("debugging", notes.value.toString())
         }
         return true
     }
