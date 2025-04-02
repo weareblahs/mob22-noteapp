@@ -7,7 +7,9 @@ import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.snackbar.Snackbar
 import com.noteapp.R
 import com.noteapp.data.model.Note
 import com.noteapp.presentation.ui.manage.base.BaseManageNoteFragment
@@ -23,16 +25,18 @@ class EditFragment: BaseManageNoteFragment() {
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
         val noteId = args.id
-        viewModel.getNote(noteId) // calls viewModel to get the existing note data
+        viewModel.handleIntent(NotesIntent.GetNote(noteId)) // calls viewModel to get the existing note data
         binding.manageNoteTopText.text = getString(R.string.edit_note)
         binding.btnSubmitNote.text = getString(R.string.edit)
         binding.btnSubmitNote.setOnClickListener {
-            viewModel.submitNote(
-                Note(
-                    id = noteId,
-                    title = binding.etNoteTitle.text.toString(),
-                    desc = binding.etNoteDesc.text.toString(),
-                    color = color
+            viewModel.handleIntent(
+                NotesIntent.SubmitNote(
+                    Note(
+                        id = noteId,
+                        title = binding.etNoteTitle.text.toString(),
+                        desc = binding.etNoteDesc.text.toString(),
+                        color = color
+                    )
                 )
             )
         }
@@ -41,20 +45,23 @@ class EditFragment: BaseManageNoteFragment() {
     override fun setupViewModelObserver() {
         super.setupViewModelObserver()
         lifecycleScope.launch {
-            viewModel.isUpdated.collect{
+            viewModel.editNote.collect {
 //                when firestore gets the note, the following will update the note title and the note description
-                binding.etNoteTitle.text = Editable.Factory.getInstance().newEditable(viewModel.existingNote.value.title)
-                binding.etNoteDesc.text = Editable.Factory.getInstance().newEditable(viewModel.existingNote.value.desc)
-                changeColor(viewModel.existingNote.value.color)
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.dataPending.collect{
-                binding.loading.isVisible = viewModel.dataPending.value // handles loading state
+                val base = viewModel.editNote.value
+                binding.loading.isVisible = base.isPending
+//                this changes the "pending" state
+                if (!base.isPending) {
+                    binding.etNoteTitle.text =
+                        Editable.Factory.getInstance().newEditable(base.existingNote.title)
+                    binding.etNoteDesc.text =
+                        Editable.Factory.getInstance().newEditable(base.existingNote.desc)
+                    changeColor(base.existingNote.color)
+                }
+                if(base.isFinished) {
+                    findNavController().popBackStack()
+                    Snackbar.make(requireView(), "Note edited", Snackbar.LENGTH_LONG).show()
+                }
             }
         }
     }
-
-
 }

@@ -17,31 +17,51 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditViewModel @Inject constructor(private val repo: NotesRepo) : BaseManageNoteViewModel() {
-    val _existingNote = MutableStateFlow<Note>(Note())
-    val existingNote = _existingNote.asStateFlow()
-    val _dataPending = MutableStateFlow<Boolean>(true)
-    val dataPending = _dataPending.asStateFlow()
+    val _editNote = MutableStateFlow(EditNote())
+    val editNote = _editNote.asStateFlow()
 
-    val _isUpdated = MutableSharedFlow<Unit>()
-    val isUpdated = _isUpdated.asSharedFlow()
+    fun submitNote(note: Note) {
+        viewModelScope.launch(Dispatchers.IO) {
+            errorHandler {
+                _editNote.update {it.copy(isPending = true)} // loading view is implemented in this case so that when changing data in Firestore, no last minute edits are allowed
+                repo.editNote(note)
+                _editNote.update {it.copy(isFinished = true)}
+            }
+        }
+    }
+
     fun getNote(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
                 val note = repo.getSingleNote(id)
-                _existingNote.update { note!! }
-                _isUpdated.emit(Unit)
-                _dataPending.update { false }
+                _editNote.update {it.copy(
+                    existingNote = note!!,
+                    isPending = false
+                )}
             }
         }
     }
 
-    override fun submitNote(note: Note) {
-        viewModelScope.launch(Dispatchers.IO) {
-            errorHandler {
-                _dataPending.update { true } // loading view is implemented in this case so that when changing data in Firestore, no last minute edits are allowed
-                repo.editNote(note)
-                _finish.emit(Unit)
-            }
+
+
+
+    override fun handleIntent(intent: NotesIntent) {
+        when(intent) {
+            is NotesIntent.GetNote -> getNote(intent.noteId)
+            is NotesIntent.SubmitNote -> submitNote(intent.note)
         }
     }
+
+
 }
+
+sealed class NotesIntent {
+    data class GetNote(val noteId: String): NotesIntent()
+    data class SubmitNote(val note: Note): NotesIntent()
+}
+
+data class EditNote(
+    val existingNote: Note = Note(), // changes note data to existing note data if it exists
+    val isPending: Boolean = true, // indicates if the data is still loading
+    val isFinished: Boolean = false // indicated if the note is updated
+)

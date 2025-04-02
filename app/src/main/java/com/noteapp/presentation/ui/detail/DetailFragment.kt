@@ -30,7 +30,6 @@ class DetailFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_detail, container, false)
         binding = FragmentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -60,7 +59,6 @@ class DetailFragment : BaseFragment() {
                 binding.noteTitle.text = viewModel.note.value.title
                 binding.noteDescription.text = viewModel.note.value.desc
                 binding.noteDisplay.setBackgroundColor(color)
-//                changeColor(viewModel.existingNote.value.color)
             }
         }
         lifecycleScope.launch {
