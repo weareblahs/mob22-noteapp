@@ -46,8 +46,6 @@ class HomeFragment : BaseFragment() {
         binding.profilePicture.setOnClickListener {
             viewModel.logOut(requireContext()) // not implemented: popbackstack when logout. check homeviewmodel
         }
-
-
         setupSearchView()
 
         binding.btnAddNote.setOnClickListener {
@@ -77,11 +75,10 @@ class HomeFragment : BaseFragment() {
         super.setupViewModelObserver()
         setupAdapter()
         lifecycleScope.launch {
-            viewModel.home.collect {
-                val base = viewModel.home.value
-                adapter.setNotes(base.notes)
+            viewModel.home.collect { base ->
                 binding.noNotes.isVisible = base.isEmpty
                 binding.loading.isVisible = base.dataPending
+                adapter.setNotes(base.notes)
                 if(base.logoutSuccess) {
                     Snackbar.make(requireView(), "Logged out successfully", Snackbar.LENGTH_LONG).show()
                     findNavController().navigate(HomeFragmentDirections.toLoginFragment())
@@ -95,12 +92,12 @@ class HomeFragment : BaseFragment() {
             object : android.widget.SearchView.OnQueryTextListener
             {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let { viewModel.searchNotes(it) }
+                    query?.let { viewModel.handleIntent(NotesIntent.SearchNote(it)) }
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    viewModel.searchNotes(newText.orEmpty())
+                    viewModel.handleIntent(NotesIntent.SearchNote(newText.orEmpty()))
                     return true
                 }
 
@@ -122,7 +119,7 @@ class HomeFragment : BaseFragment() {
             findViewById<View>(R.id.btn_delete)?.setOnClickListener {
                 dismiss()
                 // Show confirmation dialog to delete note
-                viewModel.deleteNote(requireContext(),note)
+                viewModel.handleIntent(NotesIntent.DeleteNote(requireContext(), note))
             }
             show() // Display the bottom sheet
         }

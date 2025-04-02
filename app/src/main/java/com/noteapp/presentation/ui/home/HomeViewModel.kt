@@ -73,6 +73,7 @@ class HomeViewModel @Inject constructor(
                             dataPending = false
                         )
                     }
+                    Log.d("debugging", home.value.notes.toString())
                 }
             }
         }
@@ -85,8 +86,7 @@ class HomeViewModel @Inject constructor(
 
     private fun observeSearchQuery() {
         viewModelScope.launch {
-            var base = home.value
-            _home.collect {
+            _home.collect { base ->
                 val query = base.searchQuery
                 if (query.isEmpty()) {
                     _home.update {it.copy(notes = base.allNotes)}  // Show all notes when query is empty
@@ -126,7 +126,12 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
+    fun handleIntent(intent: NotesIntent) {
+        when(intent) {
+            is NotesIntent.SearchNote -> searchNotes(intent.query)
+            is NotesIntent.DeleteNote -> deleteNote(intent.context, intent.note)
+        }
+    }
     fun deleteNote(context: Context, note: Note) {
         DialogUtils.showConfirmationDialog(
             context = context,
@@ -142,11 +147,14 @@ class HomeViewModel @Inject constructor(
         }
     }
 }
-
+sealed class NotesIntent {
+    data class SearchNote(var query: String): NotesIntent()
+    data class DeleteNote(var context: Context, var note: Note): NotesIntent()
+}
 data class Home(
 //    stores all notes
     val allNotes: List<Note> = emptyList(),
-//    stores
+//    stores a backup copy of all notes. in case the search query is blank, it will be restored
     val notes: List<Note> = emptyList(),
 //    string to store search query
     val searchQuery: String = "",

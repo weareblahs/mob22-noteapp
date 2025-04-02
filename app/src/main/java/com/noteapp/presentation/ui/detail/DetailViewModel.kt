@@ -16,20 +16,24 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(private val repo: NotesRepo) : BaseViewModel() {
-    val _dataPending = MutableStateFlow(true)
-    val dataPending = _dataPending.asStateFlow()
-    val _note = MutableStateFlow<Note>(Note())
-    val note = _note.asStateFlow()
-    val _noteDeleted = MutableStateFlow(false)
-    val noteDeleted = _noteDeleted.asStateFlow()
-
+    val _singleNote = MutableStateFlow(SingleNote())
+    val singleNote = _singleNote.asStateFlow()
     fun getNote(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
                 val note = repo.getSingleNote(id)
-                _note.update { note!! }
-                _dataPending.update { false } // handles loading state, which will control the "loading" view on the layout. the loading view only contains a spinner
+                _singleNote.update {
+                    it.copy (
+                        note = note!!,
+                        dataPending = false
+                    )
+                } // dataPending handles loading state, which will control the "loading" view on the layout. the loading view only contains a spinner
             }
+        }
+    }
+    fun handleIntent(intent: NotesIntent) {
+        when(intent) {
+            is NotesIntent.DeleteNote -> deleteNote(intent.context, intent.note)
         }
     }
     fun deleteNote(context: Context, note: Note){
@@ -41,10 +45,25 @@ class DetailViewModel @Inject constructor(private val repo: NotesRepo) : BaseVie
             negativeText = "Cancel"
         ) {
             viewModelScope.launch {
+                _singleNote.update {
+                    it.copy(dataPending = true)
+                }
                 repo.deleteNote(note)
-                _dataPending.update { true }
-                _noteDeleted.update { true }
+                _singleNote.update {
+                    it.copy(noteDeleted = true, dataPending = false)
+                }
+
             }
         }
     }
 }
+
+sealed class NotesIntent {
+    data class DeleteNote(val context: Context, var note: Note): NotesIntent()
+}
+
+data class SingleNote (
+    val dataPending: Boolean = true,
+    val note: Note = Note(),
+    val noteDeleted: Boolean = false
+)
