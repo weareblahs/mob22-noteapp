@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.noteapp.R
 import com.noteapp.data.model.Note
 import com.noteapp.databinding.FragmentHomeBinding
@@ -44,11 +45,6 @@ class HomeFragment : BaseFragment() {
             .into(binding.profilePicture) // loads google profile photo into top-left of app
         binding.profilePicture.setOnClickListener {
             viewModel.logOut(requireContext()) // not implemented: popbackstack when logout. check homeviewmodel
-            lifecycleScope.launch {
-                viewModel.success.collect{
-                    findNavController().navigate(HomeFragmentDirections.toLoginFragment())
-                }
-            }
         }
 
 
@@ -81,18 +77,17 @@ class HomeFragment : BaseFragment() {
         super.setupViewModelObserver()
         setupAdapter()
         lifecycleScope.launch {
-            viewModel.notes.collect {
-                adapter.setNotes(it)
-                binding.noNotes.isVisible = it.isEmpty()
+            viewModel.home.collect {
+                val base = viewModel.home.value
+                adapter.setNotes(base.notes)
+                binding.noNotes.isVisible = base.isEmpty
+                binding.loading.isVisible = base.dataPending
+                if(base.logoutSuccess) {
+                    Snackbar.make(requireView(), "Logged out successfully", Snackbar.LENGTH_LONG).show()
+                    findNavController().navigate(HomeFragmentDirections.toLoginFragment())
+                }
             }
         }
-
-        lifecycleScope.launch {
-            viewModel.dataPending.collect {
-                binding.loading.isVisible = viewModel.dataPending.value // handles loading state
-            }
-        }
-
     }
 
     private fun setupSearchView() {

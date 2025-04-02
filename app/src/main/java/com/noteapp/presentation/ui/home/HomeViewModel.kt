@@ -11,6 +11,7 @@ import com.noteapp.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import com.noteapp.core.utils.DialogUtils
 import com.noteapp.data.model.Note
 import com.noteapp.data.repo.NotesRepoImpl
@@ -29,25 +30,27 @@ class HomeViewModel @Inject constructor(
     private val authService: AuthService,
     val repo: NotesRepo
 ) : BaseViewModel() {
-
-    private val allNotes = MutableStateFlow<List<Note>>(emptyList()) // Stores all notes
-    val notes = MutableStateFlow<List<Note>>(emptyList()) // Stores filtered notes
-
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
-    val _empty = MutableStateFlow<Boolean>(true)
-    val empty = _empty.asStateFlow()
-
-    val _dataPending = MutableStateFlow<Boolean>(true)
-    val dataPending = _dataPending.asStateFlow()
-
-    private val _success = MutableSharedFlow<Unit>()
-    val success = _success.asSharedFlow()
-
-    private val _isSearchActive = MutableStateFlow(false)
-    val isSearchActive = _isSearchActive.asStateFlow()
-
+//
+//    private val allNotes = MutableStateFlow<List<Note>>(emptyList()) // Stores all notes
+//    val notes = MutableStateFlow<List<Note>>(emptyList()) // Stores filtered notes
+//
+//    private val _searchQuery = MutableStateFlow("")
+//    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+//
+//    val _empty = MutableStateFlow<Boolean>(true)
+//    val empty = _empty.asStateFlow()
+//
+//    val _dataPending = MutableStateFlow<Boolean>(true)
+//    val dataPending = _dataPending.asStateFlow()
+//
+//    private val _success = MutableSharedFlow<Unit>()
+//    val success = _success.asSharedFlow()
+//
+//    private val _isSearchActive = MutableStateFlow(false)
+//    val isSearchActive = _isSearchActive.asStateFlow()
+//
+    private val _home = MutableStateFlow(Home())
+    val home = _home.asStateFlow()
 
     init {
         getNotes()
@@ -62,33 +65,37 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
                 repo.getNotes().collect { items ->
-                    allNotes.value = items  // Store all notes
-                    notes.value = items // Initially show all notes
-                    _empty.update { items.isEmpty() }
-                    _dataPending.update { false }
+                    _home.update {
+                        it.copy (
+                            allNotes = items,  // Store all notes
+                            notes = items,  // Initially show all notes
+                            isEmpty = items.isEmpty(),
+                            dataPending = false
+                        )
+                    }
                 }
             }
         }
     }
 
-    fun setSearchActive(active: Boolean) {
-        _isSearchActive.value = active
-    }
 
     fun searchNotes(query: String) {
-        _searchQuery.value = query  // Update the search query
+        _home.update { it.copy(searchQuery = query) }// Update the search query
     }
 
     private fun observeSearchQuery() {
         viewModelScope.launch {
-            _searchQuery.collect { query ->
-                notes.value = if (query.isEmpty()) {
-                    allNotes.value  // Show all notes when query is empty
+            var base = home.value
+            _home.collect {
+                val query = base.searchQuery
+                if (query.isEmpty()) {
+                    _home.update {it.copy(notes = base.allNotes)}  // Show all notes when query is empty
                 } else {
-                    allNotes.value.filter {
+                    val data = base.allNotes.filter {
                         it.title.contains(query, ignoreCase = true) ||
                                 it.desc.contains(query, ignoreCase = true)
                     }
+                    _home.update{it.copy(notes = data)}
                 }
             }
         }
@@ -115,7 +122,7 @@ class HomeViewModel @Inject constructor(
         ) {
             viewModelScope.launch {
                 authService.logout()
-                _success.emit(Unit)
+                _home.update {it.copy(logoutSuccess = true)}
             }
         }
     }
@@ -135,3 +142,18 @@ class HomeViewModel @Inject constructor(
         }
     }
 }
+
+data class Home(
+//    stores all notes
+    val allNotes: List<Note> = emptyList(),
+//    stores
+    val notes: List<Note> = emptyList(),
+//    string to store search query
+    val searchQuery: String = "",
+//    a boolean state that it is empty. true as default
+    val isEmpty: Boolean = true,
+//    indicates visibility of loading view. true as default
+    val dataPending: Boolean = true,
+//    LOG OUT: check if log out is success. if not, throw error exception. false as default
+    val logoutSuccess: Boolean = false
+)
