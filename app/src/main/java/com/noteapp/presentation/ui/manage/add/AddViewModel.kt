@@ -21,14 +21,7 @@ class AddViewModel @Inject constructor(private val repo: NotesRepo): BaseManageN
             errorHandler {
 //                blank and character checks for note title and note description (optional)
                 if(note.title.isEmpty()) throw Exception("Note title must not be empty") else {
-                    if(note.title.length > 20) {
-                        throw Exception("Note title must not be longer than 20 characters. The title has ${note.title.length} characters.")
-                    } else {
-                        if(note.desc.length > 120) {
-                            throw Exception("Note description must not be longer than 120 characters. The description has ${note.desc.length} characters.")
-                        }
                         repo.addNote(note)
-                    }
                 }
                 _addNote.update { it.copy(isFinished = true) }
             }
