@@ -10,7 +10,6 @@ import com.noteapp.R
 import com.noteapp.data.model.Note
 import com.noteapp.presentation.ui.manage.base.BaseManageNoteFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint

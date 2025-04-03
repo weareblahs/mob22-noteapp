@@ -1,6 +1,5 @@
 package com.noteapp.presentation.ui.login
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.noteapp.core.service.AuthService

@@ -1,15 +1,12 @@
 package com.noteapp.presentation.ui.base
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.google.android.material.snackbar.Snackbar
 import com.noteapp.core.utils.DialogUtils
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class BaseFragment: Fragment() {

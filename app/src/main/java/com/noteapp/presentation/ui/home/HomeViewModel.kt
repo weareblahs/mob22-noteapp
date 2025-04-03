@@ -1,25 +1,15 @@
 package com.noteapp.presentation.ui.home
 
-import android.content.Context
-import android.content.DialogInterface
 import android.net.Uri
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import com.noteapp.core.service.AuthService
 import com.noteapp.data.repo.NotesRepo
 import com.noteapp.presentation.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import com.google.android.material.snackbar.Snackbar
-import com.noteapp.core.utils.DialogUtils
 import com.noteapp.data.model.Note
-import com.noteapp.data.repo.NotesRepoImpl
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,25 +20,6 @@ class HomeViewModel @Inject constructor(
     private val authService: AuthService,
     val repo: NotesRepo
 ) : BaseViewModel() {
-//
-//    private val allNotes = MutableStateFlow<List<Note>>(emptyList()) // Stores all notes
-//    val notes = MutableStateFlow<List<Note>>(emptyList()) // Stores filtered notes
-//
-//    private val _searchQuery = MutableStateFlow("")
-//    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-//
-//    val _empty = MutableStateFlow<Boolean>(true)
-//    val empty = _empty.asStateFlow()
-//
-//    val _dataPending = MutableStateFlow<Boolean>(true)
-//    val dataPending = _dataPending.asStateFlow()
-//
-//    private val _success = MutableSharedFlow<Unit>()
-//    val success = _success.asSharedFlow()
-//
-//    private val _isSearchActive = MutableStateFlow(false)
-//    val isSearchActive = _isSearchActive.asStateFlow()
-//
     private val _home = MutableStateFlow(Home())
     val home = _home.asStateFlow()
 

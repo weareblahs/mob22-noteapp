@@ -2,13 +2,11 @@ package com.noteapp.data.repo
 
 import android.util.Log
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.noteapp.core.service.AuthService
 import com.noteapp.data.model.Note
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -43,9 +41,7 @@ class NotesRepoImpl @Inject constructor (private val authService: AuthService): 
         }
     }
 
-    override suspend fun getNotesByQuery(query: String): Flow<List<Note>> {
-        TODO("Not yet implemented")
-    }
+
 
     override suspend fun getSingleNote(id: String): Note? {
         val snapshot = getCollectionRef().document(id).get().await()

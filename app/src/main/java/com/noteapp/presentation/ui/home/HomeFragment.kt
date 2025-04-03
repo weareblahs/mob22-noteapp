@@ -1,12 +1,9 @@
 package com.noteapp.presentation.ui.home
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,7 +17,6 @@ import com.noteapp.data.model.Note
 import com.noteapp.databinding.FragmentHomeBinding
 import com.noteapp.presentation.ui.adapter.NoteAdapter
 import com.noteapp.presentation.ui.base.BaseFragment
-import com.noteapp.presentation.ui.login.LoginFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

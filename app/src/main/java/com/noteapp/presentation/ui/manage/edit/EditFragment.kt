@@ -1,9 +1,7 @@
 package com.noteapp.presentation.ui.manage.edit
 
 import android.text.Editable
-import android.util.Log
 import android.view.View
-import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
