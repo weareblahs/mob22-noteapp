@@ -23,8 +23,18 @@ class EditViewModel @Inject constructor(private val repo: NotesRepo) : BaseManag
     fun submitNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
-                _editNote.update {it.copy(isPending = true)} // loading view is implemented in this case so that when changing data in Firestore, no last minute edits are allowed
-                repo.editNote(note)
+//                blank and character checks for note title and note description (optional)
+                if(note.title.isEmpty()) throw Exception("Note title must not be empty") else {
+                    if(note.title.length > 20) {
+                        throw Exception("Note title must not be longer than 20 characters. The title has ${note.title.length} characters.")
+                    } else {
+                        if(note.desc.length > 120) {
+                            throw Exception("Note description must not be longer than 120 characters. The description has ${note.desc.length} characters.")
+                        }
+                        _editNote.update {it.copy(isPending = true)} // loading view is implemented in this case so that when changing data in Firestore, no last minute edits are allowed
+                        repo.editNote(note)
+                    }
+                }
                 _editNote.update {it.copy(isFinished = true)}
             }
         }
