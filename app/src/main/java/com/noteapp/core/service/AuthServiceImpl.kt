@@ -24,10 +24,10 @@ class AuthServiceImpl(
                 val authResult = firebaseAuth.signInWithCredential(credential).await()
                 authResult.user != null
             } catch (e: GetCredentialException) {
-                Log.d("AuthService","Google Sign-in failed", e)
+                throw Exception("Google Sign-in failed")
                 false
             } catch (e: Exception) {
-                Log.d("AuthService","Something went wrong", e)
+                throw Exception("Something went wrong")
                 false
             }
         }

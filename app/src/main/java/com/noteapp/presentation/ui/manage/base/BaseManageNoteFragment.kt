@@ -5,16 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.noteapp.R
-import com.noteapp.core.utils.ColorUtils
 import com.noteapp.databinding.FragmentManageNoteBinding
 import com.noteapp.presentation.ui.base.BaseFragment
-import kotlinx.coroutines.launch
 
 abstract class BaseManageNoteFragment: BaseFragment() {
     lateinit var binding: FragmentManageNoteBinding
@@ -64,12 +58,6 @@ abstract class BaseManageNoteFragment: BaseFragment() {
 
     override fun setupViewModelObserver() {
         super.setupViewModelObserver()
-        lifecycleScope.launch  {
-            viewModel.finish.collect{
-                findNavController().popBackStack()
-                Snackbar.make(requireView(), "Note modified", Snackbar.LENGTH_LONG).show()
-            }
-        }
     }
 
     fun changeColor(colorResource: Int) {

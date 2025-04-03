@@ -1,6 +1,5 @@
 package com.noteapp.presentation.ui.manage.add
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.noteapp.data.model.Note
 import com.noteapp.data.repo.NotesRepo
@@ -9,20 +8,36 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AddViewModel @Inject constructor(private val repo: NotesRepo): BaseManageNoteViewModel() {
-
-
-    override fun submitNote(note: Note) {
+    val _addNote = MutableStateFlow(AddNote())
+    val addNote = _addNote.asStateFlow()
+    fun submitNote(note: Note) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
-//                blank checks for note title
-                if(note.title.isEmpty()) throw Exception("Note title must not be empty") else repo.addNote(note)
-                _finish.emit(Unit)
+//                blank and character checks for note title and note description (optional)
+                if(note.title.isEmpty()) throw Exception("Note title must not be empty") else {
+                        repo.addNote(note)
+                }
+                _addNote.update { it.copy(isFinished = true) }
             }
         }
     }
+
+    fun handleIntent(intent: NotesIntent) {
+        when(intent) {
+            is NotesIntent.SubmitNote -> submitNote(intent.note)
+        }
+    }
 }
+sealed class NotesIntent {
+    data class SubmitNote(val note: Note): NotesIntent()
+}
+data class AddNote (
+    val isFinished: Boolean = false
+)
+

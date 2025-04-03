@@ -1,12 +1,9 @@
 package com.noteapp.presentation.ui.home
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,12 +11,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.snackbar.Snackbar
 import com.noteapp.R
 import com.noteapp.data.model.Note
 import com.noteapp.databinding.FragmentHomeBinding
 import com.noteapp.presentation.ui.adapter.NoteAdapter
 import com.noteapp.presentation.ui.base.BaseFragment
-import com.noteapp.presentation.ui.login.LoginFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -34,28 +31,28 @@ class HomeFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_home, container, false)
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
+        setupAdapter()
         Glide.with(binding.profilePicture).load(viewModel.getProfileUrl())
             .into(binding.profilePicture) // loads google profile photo into top-left of app
         binding.profilePicture.setOnClickListener {
-            viewModel.logOut(requireContext()) // not implemented: popbackstack when logout. check homeviewmodel
-            lifecycleScope.launch {
-                viewModel.success.collect{
-                    findNavController().navigate(HomeFragmentDirections.toLoginFragment())
-                }
+            fun logoutIntent() {
+                viewModel.handleIntent(NotesIntent.Logout())
             }
+
+            showDialog(
+                getString(R.string.log_out),
+                getString(R.string.log_out_confirmation),
+                getString(R.string.log_out),
+                ::logoutIntent,
+                false // since the MutableStateFlow is updated and the snackbar is handled by setupViewModelObserver, the snackbar option in this dialog is set to false
+            )
         }
-
-//        binding.searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-//            binding.tvMyNotes.isVisible = !hasFocus
-//        }
-
         setupSearchView()
 
         binding.btnAddNote.setOnClickListener {
@@ -83,20 +80,17 @@ class HomeFragment : BaseFragment() {
 
     override fun setupViewModelObserver() {
         super.setupViewModelObserver()
-        setupAdapter()
         lifecycleScope.launch {
-            viewModel.notes.collect {
-                adapter.setNotes(it)
-                binding.noNotes.isVisible = it.isEmpty()
+            viewModel.home.collect { base ->
+                binding.noNotes.isVisible = base.isEmpty
+                binding.loading.isVisible = base.dataPending
+                adapter.setNotes(base.notes)
+                if(base.logoutSuccess) {
+                    Snackbar.make(requireView(), "Logged out successfully", Snackbar.LENGTH_LONG).show()
+                    findNavController().navigate(HomeFragmentDirections.toLoginFragment())
+                }
             }
         }
-
-        lifecycleScope.launch {
-            viewModel.dataPending.collect {
-                binding.loading.isVisible = viewModel.dataPending.value // handles loading state
-            }
-        }
-
     }
 
     private fun setupSearchView() {
@@ -104,12 +98,12 @@ class HomeFragment : BaseFragment() {
             object : android.widget.SearchView.OnQueryTextListener
             {
                 override fun onQueryTextSubmit(query: String?): Boolean {
-                    query?.let { viewModel.searchNotes(it) }
+                    query?.let { viewModel.handleIntent(NotesIntent.SearchNote(it)) }
                     return true
                 }
 
                 override fun onQueryTextChange(newText: String?): Boolean {
-                    viewModel.searchNotes(newText.orEmpty())
+                    viewModel.handleIntent(NotesIntent.SearchNote(newText.orEmpty()))
                     return true
                 }
 
@@ -131,9 +125,24 @@ class HomeFragment : BaseFragment() {
             findViewById<View>(R.id.btn_delete)?.setOnClickListener {
                 dismiss()
                 // Show confirmation dialog to delete note
-                viewModel.deleteNote(requireContext(),note)
+                fun deleteNoteIntent() {
+                    viewModel.handleIntent(NotesIntent.DeleteNote(note))
+                }
+                // NOTE: due to this kind of function parameter not accepting parameters, the above function is created
+                showDialog(
+                    title = getString(R.string.delete_note),
+                    message = getString(R.string.note_delete_confirmation),
+                    confirmText = getString(R.string.delete),
+                    function = ::deleteNoteIntent,
+                    snackbar = true,
+                    snackbarMsg = getString(R.string.note_deleted_snackbar)
+                )
+
             }
             show() // Display the bottom sheet
         }
     }
+
+
 }
+

@@ -30,7 +30,6 @@ class DetailFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_detail, container, false)
         binding = FragmentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,41 +39,41 @@ class DetailFragment : BaseFragment() {
         viewModel.getNote(args.NoteId)
 
         binding.btnDeleteNote.setOnClickListener {
+            fun deleteNoteIntent() {
+                viewModel.handleIntent(NotesIntent.DeleteNote(viewModel.singleNote.value.note))
+            }
             // Show confirmation dialog to delete note
-            viewModel.deleteNote(requireContext(), viewModel.note.value)
+            showDialog(
+                getString(R.string.delete_note),
+                getString(R.string.note_delete_confirmation),
+                getString(R.string.delete),
+                ::deleteNoteIntent,
+                false // since the MutableStateFlow is updated and the snackbar is handled by setupViewModelObserver, the snackbar option in this dialog is set to false
+            )
         }
 
         binding.btnEditNote.setOnClickListener {
-            val dir = DetailFragmentDirections.actionDetailFragmentToEditFragment(viewModel.note.value.id!!)
+            val dir = DetailFragmentDirections.actionDetailFragmentToEditFragment(viewModel.singleNote.value.note.id!!)
             findNavController().navigate(dir)
         }
     }
 
     override fun setupViewModelObserver() {
         super.setupViewModelObserver()
-        lifecycleScope.launch {
-            viewModel.note.collect{
-//                when firestore gets the note, the following will update the note title and the note description
-                var color = viewModel.note.value.color
 
-                binding.noteTitle.text = viewModel.note.value.title
-                binding.noteDescription.text = viewModel.note.value.desc
-                binding.noteDisplay.setBackgroundColor(color)
-//                changeColor(viewModel.existingNote.value.color)
-            }
-        }
         lifecycleScope.launch {
-            viewModel.dataPending.collect {
-                binding.loading.isVisible = viewModel.dataPending.value // handles loading state
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.noteDeleted.collect {
-                if(viewModel.noteDeleted.value) {
+            viewModel.singleNote.collect { base ->
+//              when firestore gets the note, the following will update the note title and the note description
+                binding.loading.isVisible = base.dataPending // handles loading state
+                binding.noteTitle.text = base.note.title // binds title
+                binding.noteDescription.text = base.note.desc // binds description
+                binding.noteDisplay.setBackgroundColor(base.note.color) // assigns color
+
+                if(base.noteDeleted) {
 //                    BUG FIX: after note is edited, if a user wants to delete this note, popBackStack() will be
 //                             going back to the login layout instead of the home layout as expected. this is a
 //                             hardcoded way to do this
-                    val dir = DetailFragmentDirections.actionDetailFragmentToHomeFragment2()
+                    val dir = DetailFragmentDirections.actionDetailFragmentToHomeFragment()
                     findNavController().navigate(dir)
                     Snackbar.make(requireView(), "Note deleted", Snackbar.LENGTH_LONG).show()
                 }

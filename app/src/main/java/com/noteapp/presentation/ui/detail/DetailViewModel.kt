@@ -16,35 +16,46 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(private val repo: NotesRepo) : BaseViewModel() {
-    val _dataPending = MutableStateFlow(true)
-    val dataPending = _dataPending.asStateFlow()
-    val _note = MutableStateFlow<Note>(Note())
-    val note = _note.asStateFlow()
-    val _noteDeleted = MutableStateFlow(false)
-    val noteDeleted = _noteDeleted.asStateFlow()
-
+    val _singleNote = MutableStateFlow(SingleNote())
+    val singleNote = _singleNote.asStateFlow()
     fun getNote(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             errorHandler {
                 val note = repo.getSingleNote(id)
-                _note.update { note!! }
-                _dataPending.update { false } // handles loading state, which will control the "loading" view on the layout. the loading view only contains a spinner
+                _singleNote.update {
+                    it.copy (
+                        note = note!!,
+                        dataPending = false
+                    )
+                } // dataPending handles loading state, which will control the "loading" view on the layout. the loading view only contains a spinner
             }
         }
     }
-    fun deleteNote(context: Context, note: Note){
-        DialogUtils.showConfirmationDialog(
-            context = context,
-            title = "Delete Note",
-            message = "Are you sure you want to delete this note?",
-            positiveText = "Delete",
-            negativeText = "Cancel"
-        ) {
-            viewModelScope.launch {
-                repo.deleteNote(note)
-                _dataPending.update { true }
-                _noteDeleted.update { true }
+    fun handleIntent(intent: NotesIntent) {
+        when(intent) {
+            is NotesIntent.DeleteNote -> deleteNote(intent.note)
+        }
+    }
+    fun deleteNote(note: Note){
+        viewModelScope.launch {
+            _singleNote.update {
+                it.copy(dataPending = true)
             }
+            repo.deleteNote(note)
+            _singleNote.update {
+                it.copy(noteDeleted = true)
+            }
+
         }
     }
 }
+
+sealed class NotesIntent {
+    data class DeleteNote(var note: Note): NotesIntent()
+}
+
+data class SingleNote (
+    val dataPending: Boolean = true, // "loading" view indicator
+    val note: Note = Note(), // if firestore successfully gets note, store note here
+    val noteDeleted: Boolean = false // if note is deleted, this will be set to "true" so that it will go back to home layout
+)
