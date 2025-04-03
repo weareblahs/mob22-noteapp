@@ -39,8 +39,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingVertical="8sp"
-            android:paddingHorizontal="16sp"
+            android:paddingVertical="0sp"
+            android:paddingHorizontal="0sp"
             android:orientation="vertical"
             android:layout_weight="1">
             <!-- loading -->
@@ -63,28 +63,37 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="40sp"
-                        android:textColor="@color/black"
-                        android:id="@+id/noteTitle"
-                        android:hint="@string/note_title_placeholder_ref"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="25sp"
-                        android:id="@+id/noteDescription"
-                        android:textColor="@color/black"/>
-                </LinearLayout>
-                <Space
                     android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:paddingVertical="8dp"
+                    android:paddingHorizontal="16dp"
                     android:layout_height="0dp"
-                    android:layout_weight="1"/>
+                    android:layout_weight="7">
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="40sp"
+                            android:lines="2"
+                            android:textColor="@color/black"
+                            android:id="@+id/noteTitle"
+                            android:hint="@string/note_title_placeholder_ref"/>
+                    </ScrollView>
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="4">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/noteDescription"
+                            android:textSize="18sp"
+                            android:textColor="@color/black"/>
+                    </ScrollView>
+
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,7 +111,7 @@
                         android:layout_marginStart="32dp"
                         android:layout_marginEnd="32dp"
                         app:cornerRadius="8dp"
-                        android:layout_marginBottom="12sp"/>
+                        android:layout_marginBottom="0sp"/>
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDeleteNote"
                         android:layout_width="match_parent"
