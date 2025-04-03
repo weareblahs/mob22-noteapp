@@ -9,7 +9,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.noteapp.R
 import com.noteapp.data.model.Note
 import com.noteapp.presentation.ui.manage.base.BaseManageNoteFragment
-import com.noteapp.presentation.ui.manage.edit.NotesIntent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

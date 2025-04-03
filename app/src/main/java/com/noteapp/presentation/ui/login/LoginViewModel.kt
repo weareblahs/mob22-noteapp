@@ -1,5 +1,6 @@
 package com.noteapp.presentation.ui.login
 
+import android.app.Application
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.noteapp.core.service.AuthService
@@ -16,11 +17,7 @@ class LoginViewModel @Inject constructor(
 ): BaseViewModel() {
     private val _success = MutableSharedFlow<Unit>()
     val success = _success.asSharedFlow()
-    fun handleIntent(intent: AuthIntent) {
-        when(intent) {
-            is AuthIntent.LoginWithGoogle -> loginWithGoogle(intent.context)
-        }
-    }
+
     fun loginWithGoogle(context: Context){
         viewModelScope.launch {
             errorHandler {
@@ -30,8 +27,4 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
-}
-
-sealed class AuthIntent {
-    data class LoginWithGoogle(var context: Context): AuthIntent()
 }

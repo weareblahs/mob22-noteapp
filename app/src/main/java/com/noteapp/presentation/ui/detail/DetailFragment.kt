@@ -39,8 +39,17 @@ class DetailFragment : BaseFragment() {
         viewModel.getNote(args.NoteId)
 
         binding.btnDeleteNote.setOnClickListener {
+            fun deleteNoteIntent() {
+                viewModel.handleIntent(NotesIntent.DeleteNote(viewModel.singleNote.value.note))
+            }
             // Show confirmation dialog to delete note
-            viewModel.handleIntent(NotesIntent.DeleteNote(requireContext(), viewModel.singleNote.value.note))
+            showDialog(
+                getString(R.string.delete_note),
+                getString(R.string.note_delete_confirmation),
+                getString(R.string.delete),
+                ::deleteNoteIntent,
+                false // since the MutableStateFlow is updated and the snackbar is handled by setupViewModelObserver, the snackbar option in this dialog is set to false
+            )
         }
 
         binding.btnEditNote.setOnClickListener {

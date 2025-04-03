@@ -41,10 +41,21 @@ class HomeFragment : BaseFragment() {
 
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
+        setupAdapter()
         Glide.with(binding.profilePicture).load(viewModel.getProfileUrl())
             .into(binding.profilePicture) // loads google profile photo into top-left of app
         binding.profilePicture.setOnClickListener {
-            viewModel.logOut(requireContext()) // not implemented: popbackstack when logout. check homeviewmodel
+            fun logoutIntent() {
+                viewModel.handleIntent(NotesIntent.Logout())
+            }
+
+            showDialog(
+                getString(R.string.log_out),
+                getString(R.string.log_out_confirmation),
+                getString(R.string.log_out),
+                ::logoutIntent,
+                false // since the MutableStateFlow is updated and the snackbar is handled by setupViewModelObserver, the snackbar option in this dialog is set to false
+            )
         }
         setupSearchView()
 
@@ -73,7 +84,6 @@ class HomeFragment : BaseFragment() {
 
     override fun setupViewModelObserver() {
         super.setupViewModelObserver()
-        setupAdapter()
         lifecycleScope.launch {
             viewModel.home.collect { base ->
                 binding.noNotes.isVisible = base.isEmpty
@@ -119,9 +129,24 @@ class HomeFragment : BaseFragment() {
             findViewById<View>(R.id.btn_delete)?.setOnClickListener {
                 dismiss()
                 // Show confirmation dialog to delete note
-                viewModel.handleIntent(NotesIntent.DeleteNote(requireContext(), note))
+                fun deleteNoteIntent() {
+                    viewModel.handleIntent(NotesIntent.DeleteNote(note))
+                }
+                // NOTE: due to this kind of function parameter not accepting parameters, the above function is created
+                showDialog(
+                    title = getString(R.string.delete_note),
+                    message = getString(R.string.note_delete_confirmation),
+                    confirmText = getString(R.string.delete),
+                    function = ::deleteNoteIntent,
+                    snackbar = true,
+                    snackbarMsg = getString(R.string.note_deleted_snackbar)
+                )
+
             }
             show() // Display the bottom sheet
         }
     }
+
+
 }
+

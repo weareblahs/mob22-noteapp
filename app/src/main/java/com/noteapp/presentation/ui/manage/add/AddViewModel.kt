@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.noteapp.data.model.Note
 import com.noteapp.data.repo.NotesRepo
 import com.noteapp.presentation.ui.manage.base.BaseManageNoteViewModel
-import com.noteapp.presentation.ui.manage.edit.NotesIntent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,14 +26,15 @@ class AddViewModel @Inject constructor(private val repo: NotesRepo): BaseManageN
         }
     }
 
-    override fun handleIntent(intent: NotesIntent) {
+    fun handleIntent(intent: NotesIntent) {
         when(intent) {
-            is NotesIntent.GetNote -> TODO()
             is NotesIntent.SubmitNote -> submitNote(intent.note)
         }
     }
 }
-
+sealed class NotesIntent {
+    data class SubmitNote(val note: Note): NotesIntent()
+}
 data class AddNote (
     val isFinished: Boolean = false
 )

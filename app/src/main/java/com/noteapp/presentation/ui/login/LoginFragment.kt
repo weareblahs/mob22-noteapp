@@ -30,7 +30,7 @@ class LoginFragment : BaseFragment() {
     override fun setupUiComponents(view: View) {
         super.setupUiComponents(view)
         binding.btnGoogleSignIn.setOnClickListener {
-            viewModel.handleIntent(AuthIntent.LoginWithGoogle(requireContext()))
+            viewModel.loginWithGoogle(requireContext())
         }
     }
 

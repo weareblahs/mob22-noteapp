@@ -13,5 +13,4 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class BaseManageNoteViewModel: BaseViewModel() {
-    abstract fun handleIntent(intent: NotesIntent)
 }

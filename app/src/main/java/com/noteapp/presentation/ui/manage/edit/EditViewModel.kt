@@ -45,13 +45,12 @@ class EditViewModel @Inject constructor(private val repo: NotesRepo) : BaseManag
 
 
 
-    override fun handleIntent(intent: NotesIntent) {
+    fun handleIntent(intent: NotesIntent) {
         when(intent) {
             is NotesIntent.GetNote -> getNote(intent.noteId)
             is NotesIntent.SubmitNote -> submitNote(intent.note)
         }
     }
-
 
 }
 

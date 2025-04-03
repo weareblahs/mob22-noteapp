@@ -33,33 +33,25 @@ class DetailViewModel @Inject constructor(private val repo: NotesRepo) : BaseVie
     }
     fun handleIntent(intent: NotesIntent) {
         when(intent) {
-            is NotesIntent.DeleteNote -> deleteNote(intent.context, intent.note)
+            is NotesIntent.DeleteNote -> deleteNote(intent.note)
         }
     }
-    fun deleteNote(context: Context, note: Note){
-        DialogUtils.showConfirmationDialog(
-            context = context,
-            title = "Delete Note",
-            message = "Are you sure you want to delete this note?",
-            positiveText = "Delete",
-            negativeText = "Cancel"
-        ) {
-            viewModelScope.launch {
-                _singleNote.update {
-                    it.copy(dataPending = true)
-                }
-                repo.deleteNote(note)
-                _singleNote.update {
-                    it.copy(noteDeleted = true)
-                }
-
+    fun deleteNote(note: Note){
+        viewModelScope.launch {
+            _singleNote.update {
+                it.copy(dataPending = true)
             }
+            repo.deleteNote(note)
+            _singleNote.update {
+                it.copy(noteDeleted = true)
+            }
+
         }
     }
 }
 
 sealed class NotesIntent {
-    data class DeleteNote(val context: Context, var note: Note): NotesIntent()
+    data class DeleteNote(var note: Note): NotesIntent()
 }
 
 data class SingleNote (

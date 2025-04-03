@@ -112,44 +112,32 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun logOut(context: Context) {
-        DialogUtils.showConfirmationDialog(
-            context = context,
-            title = "Log out",
-            message = "Are you sure you want to log out?",
-            positiveText = "Log out",
-            negativeText = "Back"
-        ) {
-            viewModelScope.launch {
-                authService.logout()
-                _home.update {it.copy(logoutSuccess = true)}
-            }
+    fun logOut() {
+        viewModelScope.launch {
+            authService.logout()
+            _home.update {it.copy(logoutSuccess = true)}
         }
     }
     fun handleIntent(intent: NotesIntent) {
         when(intent) {
             is NotesIntent.SearchNote -> searchNotes(intent.query)
-            is NotesIntent.DeleteNote -> deleteNote(intent.context, intent.note)
+            is NotesIntent.DeleteNote -> deleteNote(intent.note)
+            is NotesIntent.Logout -> logOut()
         }
     }
-    fun deleteNote(context: Context, note: Note) {
-        DialogUtils.showConfirmationDialog(
-            context = context,
-            title = "Delete Note",
-            message = "Are you sure you want to delete this note?",
-            positiveText = "Delete",
-            negativeText = "Cancel"
-        ) {
-            viewModelScope.launch {
-                repo.deleteNote(note)
-                getNotes() // Refresh notes after deletion
-            }
+    private fun deleteNote(note: Note) {
+        viewModelScope.launch {
+            repo.deleteNote(note) // deletes note
+            getNotes() // Refresh notes after deletion
         }
     }
+
+
 }
 sealed class NotesIntent {
     data class SearchNote(var query: String): NotesIntent()
-    data class DeleteNote(var context: Context, var note: Note): NotesIntent()
+    data class DeleteNote(var note: Note): NotesIntent()
+    class Logout(): NotesIntent()
 }
 data class Home(
 //    stores all notes
